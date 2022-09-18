@@ -7,18 +7,36 @@ typedef struct AVL_Node{
 	int balance;
 }AVL_Node,*AVL_Tree;
 
-int Get_High(AVL_Tree T,int x);	//¼ÆËã¶ş²æÊ÷µÄ¸ß¶È 
+AVL_Node *father;	//¶¨ÒåÒ»¸ö¸¸½áµã£¬ÓÃÓÚÉ¾³ıÊı¾İÊ±¶¨Î»¸¸½áµã 
+
+bool InitTree(AVL_Tree &T);		//³õÊ¼»¯Æ½ºâ¶ş²æÊ÷ 
+int Get_High(AVL_Tree T);	//¼ÆËã¶ş²æÊ÷µÄ¸ß¶È 
 bool Insert(AVL_Tree &T,int data);	//²åÈëÊı¾İ 
-bool Left_Left(AVL_Tree &T);	//llÇé¿ö×îĞ¡Ê§ºâÊ÷µÄ×ó×ÓÊ÷ÓÒĞıÒ»´Î 
-bool Left_Right(AVL_Tree &T);	//LR,½«×îĞ¡Ê§ºâÊ÷AµÄ×ó×ÓÊ÷BµÄÓÒ×ÓÊ÷C½áµã£¬ÏÈÏò×óĞıÔÙÏòÓÒĞı×ªÒ»´Î 
-bool Right_Right(AVL_Tree &T);	//RR,×îĞ¡Ê§ºâÊ÷µÄÓÒ×ÓÊ÷×óĞıÒ»´Î
-bool Right_Left(AVL_Tree &T);	//RL,½«×îĞ¡Ê§ºâÊ÷AµÄÓÒ×ÓÊ÷BµÄ×ó×ÓÊ÷C½áµã£¬ÏÈÓÒĞı£¬ÔÙ×óĞı 
+AVL_Node *Left_Left(AVL_Tree &T);	//llÇé¿ö×îĞ¡Ê§ºâÊ÷µÄ×ó×ÓÊ÷ÓÒĞıÒ»´Î 
+AVL_Node *Left_Right(AVL_Tree &T);	//LR,½«×îĞ¡Ê§ºâÊ÷AµÄ×ó×ÓÊ÷BµÄÓÒ×ÓÊ÷C½áµã£¬ÏÈÏò×óĞıÔÙÏòÓÒĞı×ªÒ»´Î 
+AVL_Node *Right_Right(AVL_Tree &T);	//RR,×îĞ¡Ê§ºâÊ÷µÄÓÒ×ÓÊ÷×óĞıÒ»´Î
+AVL_Node *Right_Left(AVL_Tree &T);	//RL,½«×îĞ¡Ê§ºâÊ÷AµÄÓÒ×ÓÊ÷BµÄ×ó×ÓÊ÷C½áµã£¬ÏÈÓÒĞı£¬ÔÙ×óĞı 
 bool creat(AVL_Tree &T,int x[],int n);	//´´½¨Æ½ºâ¶ş²æÊ÷ 
+void InOrder(AVL_Tree T);	//ÖĞĞò±éÀúÆ½ºâ¶ş²æÊ÷ 
+AVL_Node *AVL_Search(AVL_Tree B,int x);	//Æ½ºâÊ÷µÄ²éÕÒ
+AVL_Node *AVL_Delete(AVL_Tree &T,int x);	//Æ½ºâÊ÷µÄÉ¾³ı 
+
 
 int main(){
+	AVL_Tree T;
+	int x[10]={5,10,12,25,35,40,50,60,63,90};
+	InitTree(T);
+	
+	creat(T,x,10);
+	InOrder(T);
+	printf("\nTree High:%d\n",Get_High(T));
 	return 0;
 } 
 
+bool InitTree(AVL_Tree &T)		//³õÊ¼»¯Æ½ºâ¶ş²æÊ÷ 
+{
+	T=NULL; 
+} 
 int Get_High(AVL_Tree T)	//¼ÆËã¶ş²æÊ÷µÄ¸ß¶È 
 {
 	int MAXH,LH,RH;
@@ -36,39 +54,36 @@ bool Insert(AVL_Tree &T,int x)	//²åÈëÊı¾İ
 {
 	if(T == NULL){
 		T = (AVL_Node *)malloc(sizeof(AVL_Node));
-		T->lchild = T->rchild = NULL;
+		T->lchild=T->rchild=NULL;
 		T->data = x;
 	}
 	
 	else if(x > T->data){ 
-		Insert(T->rchild,x);//µİ¹é²åÈë£¬²¢ÔÚµİ¹éÍêºóÖØĞÂ¼ÆËãbalanceÆ½ºâÒò×Ó
-		T->balance = Get_High(T->lchild)-Get_High(T->lchild);
-		
+		Insert(T->rchild,x);//µİ¹é²åÈë£¬²¢ÔÚµİ¹éÍêºóÖØĞÂ¼ÆËã¸ÃÂ·¾¶ÖĞËùÓĞ½ÚµãµÄbalanceÆ½ºâÒò×Ó
+		T->balance = Get_High(T->lchild)-Get_High(T->rchild);
 		if(T->balance == 2 || T->balance == -2){	//Èç¹ûTÊÇ·ñÎª×îĞ¡Ê§ºâÊ÷ 
-		
 			if(T->rchild->balance == 1){	//ÅĞ¶Ï TµÄÇé¿öĞèÒªÄÄÖÖĞı×ª 
-				Right_Left(T);				//µ±balanceÎª1Ê±£¬Ö¤Ã÷ĞÂÊı¾İ²åÈçÈëÔÚTµÄÓÒ×ÓÊ÷µÄ×ó×ÓÊ÷ÉÏ 
+				T=Right_Left(T);				//µ±balanceÎª1Ê±£¬Ö¤Ã÷ĞÂÊı¾İ²åÈçÈëÔÚTµÄÓÒ×ÓÊ÷µÄ×ó×ÓÊ÷ÉÏ 
 			}
 			
 			else if(T->rchild->balance == -1){//balanceÎª-1Ê±£¬Ö¤Ã÷ĞÂÊı¾İ²åÈçÈëÔÚTµÄÓÒ×ÓÊ÷µÄÓÒ×ÓÊ÷ÉÏ
-				Right_Right(T);
+				T=Right_Right(T);
 			}
-				
 		} 
 	}
 	else if(x < T->data)
 	{
 		Insert(T->lchild,x);	//µİ¹é²åÈë£¬²¢ÔÚµİ¹éÍêºóÖØĞÂ¼ÆËãbalanceÆ½ºâÒò×Ó 
-		T->balance = Get_High(T->lchild)-Get_High(T->lchild); 
+		T->balance = Get_High(T->lchild)-Get_High(T->rchild); 
 		
 		if(T->balance == 2 || T->balance == -2){
 			
 			if(T->lchild->balance == 1){
-				Left_Left(T);
+				T=Left_Left(T);
 			}
 			
 			if(T->lchild->balance == -1){
-				Left_Right(T);
+				T=Left_Right(T);
 			}
 			
 		}
@@ -77,7 +92,7 @@ bool Insert(AVL_Tree &T,int x)	//²åÈëÊı¾İ
 } 
 
 
-bool Left_Left(AVL_Tree &T)		//llÇé¿ö×îĞ¡Ê§ºâÊ÷×ó×ÓÊ÷ÓÒĞıÒ»´Î 
+AVL_Node *Left_Left(AVL_Tree &T)		//llÇé¿ö×îĞ¡Ê§ºâÊ÷×ó×ÓÊ÷ÓÒĞıÒ»´Î 
 {
 	AVL_Node *K;
 	K=T->lchild;
@@ -86,10 +101,10 @@ bool Left_Left(AVL_Tree &T)		//llÇé¿ö×îĞ¡Ê§ºâÊ÷×ó×ÓÊ÷ÓÒĞıÒ»´Î
 	
 	T->balance = Get_High(T->lchild)- Get_High(T->rchild);
 	K->balance = Get_High(K->lchild)- Get_High(K->rchild);
-	
+	return K;
 } 
 
-bool Left_Right(AVL_Tree &T)	
+AVL_Node *Left_Right(AVL_Tree &T)	
 {//LR,½«×îĞ¡Ê§ºâÊ÷AµÄ×ó×ÓÊ÷BµÄÓÒ×ÓÊ÷C½áµã£¬ÏÈÏò×óĞıÔÙÏòÓÒĞı×ªÒ»´Î 
 
 	AVL_Node *k,*m;
@@ -110,8 +125,9 @@ bool Left_Right(AVL_Tree &T)
 	T->balance = Get_High(T->lchild)- Get_High(T->rchild);
 	k->balance = Get_High(k->lchild)- Get_High(k->rchild);
 	m->balance = Get_High(m->lchild)- Get_High(m->rchild);
+	return k;
 } 
-bool Right_Right(AVL_Tree &T)	//RR,×îĞ¡Ê§ºâÊ÷µÄÓÒ×ÓÊ÷×óĞıÒ»´Î
+AVL_Node *Right_Right(AVL_Tree &T)	//RR,×îĞ¡Ê§ºâÊ÷µÄÓÒ×ÓÊ÷×óĞıÒ»´Î
 {
 	AVL_Node *k;
 	k=T->rchild;
@@ -120,10 +136,12 @@ bool Right_Right(AVL_Tree &T)	//RR,×îĞ¡Ê§ºâÊ÷µÄÓÒ×ÓÊ÷×óĞıÒ»´Î
 	
 	T->balance = Get_High(T->lchild)- Get_High(T->rchild);
 	k->balance = Get_High(k->lchild)- Get_High(k->rchild);
+	return k;
 } 
 
-bool Right_Left(AVL_Tree &T)	//RL,½«×îĞ¡Ê§ºâÊ÷AµÄÓÒ×ÓÊ÷BµÄ×ó×ÓÊ÷C½áµã£¬ÏÈÓÒĞı£¬ÔÙ×óĞı
+AVL_Node *Right_Left(AVL_Tree &T)	//RL,½«×îĞ¡Ê§ºâÊ÷AµÄÓÒ×ÓÊ÷BµÄ×ó×ÓÊ÷C½áµã£¬ÏÈÓÒĞı£¬ÔÙ×óĞı
 {
+	printf("4\n");
 	AVL_Node *k,*m;
 	m=T->rchild;
 	k=m->lchild;
@@ -141,10 +159,54 @@ bool Right_Left(AVL_Tree &T)	//RL,½«×îĞ¡Ê§ºâÊ÷AµÄÓÒ×ÓÊ÷BµÄ×ó×ÓÊ÷C½áµã£¬ÏÈÓÒĞı£¬Ô
 	T->balance = Get_High(T->lchild)- Get_High(T->rchild);
 	k->balance = Get_High(k->lchild)- Get_High(k->rchild);
 	m->balance = Get_High(m->lchild)- Get_High(m->rchild);
+	return k;
 } 
 
 bool creat(AVL_Tree &T,int x[],int n)	//´´½¨Æ½ºâ¶ş²æÊ÷ 
 {
-	
+	for(int i=0;i<n;i++){
+		Insert(T,x[i]);
+	} 
 	return true; 
+} 
+
+void InOrder(AVL_Tree T)	//ÖĞĞò±éÀúÆ½ºâ¶ş²æÊ÷ 
+{
+	if(T != NULL){
+		InOrder(T->lchild);
+		printf("%d  ",T->data);
+		InOrder(T->rchild);
+	}
+} 
+AVL_Node *AVL_Search(AVL_Tree B,int x)	//ÅÅĞòÊ÷µÄ²éÕÒ 
+{
+	while(B != NULL && B->data != x){
+		if(B->data > x){
+			B=B->lchild;
+		}
+		if(B->data < x){
+			B=B->rchild;
+		}
+	} 
+	return B;
+} 
+
+AVL_Node *AVL_Delete(AVL_Tree &T,int x)	//Æ½ºâÊ÷µÄÉ¾³ı 
+{
+	/*
+	¹²4ÖÖÇé¿ö£º 
+	1. É¾³ıÒ¶×Ó½áµã
+	2.É¾³ıµÄ½áµãÓĞ×ó×ÓÊ÷
+	3.É¾³ıµÄ½áµãÓĞÓÒ×ÓÊ÷
+	4.É¾³ıµÄ½áµãÓĞÁ½¸ö×ÓÊ÷ 
+	*/ 
+	
+	if(T->data == x)
+	{
+		if()
+	}
+	if(x>T->data){
+		AVL_Delete(T->rchild,x);	
+		
+	} 
 } 
