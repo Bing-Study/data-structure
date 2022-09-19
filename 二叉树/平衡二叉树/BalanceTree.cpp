@@ -19,7 +19,7 @@ AVL_Node *Right_Left(AVL_Tree &T);	//RL,½«×îÐ¡Ê§ºâÊ÷AµÄÓÒ×ÓÊ÷BµÄ×ó×ÓÊ÷C½áµã£¬ÏÈÓ
 bool creat(AVL_Tree &T,int x[],int n);	//´´½¨Æ½ºâ¶þ²æÊ÷ 
 void InOrder(AVL_Tree T);	//ÖÐÐò±éÀúÆ½ºâ¶þ²æÊ÷ 
 AVL_Node *AVL_Search(AVL_Tree B,int x);	//Æ½ºâÊ÷µÄ²éÕÒ
-AVL_Node *AVL_Delete(AVL_Tree &T,int x);	//Æ½ºâÊ÷µÄÉ¾³ý 
+//AVL_Node *AVL_Delete(AVL_Tree &T,int x);	//Æ½ºâÊ÷µÄÉ¾³ý 
 
 
 int main(){
@@ -191,15 +191,15 @@ AVL_Node *AVL_Search(AVL_Tree B,int x)	//ÅÅÐòÊ÷µÄ²éÕÒ
 	return B;
 } 
 
-AVL_Node *AVL_Delete(AVL_Tree &T,int x)	//Æ½ºâÊ÷µÄÉ¾³ý 
+/*AVL_Node *AVL_Delete(AVL_Tree &T,int x)	//Æ½ºâÊ÷µÄÉ¾³ý 
 {
-	/*
+	
 	¹²4ÖÖÇé¿ö£º 
 	1. É¾³ýÒ¶×Ó½áµã
 	2.É¾³ýµÄ½áµãÓÐ×ó×ÓÊ÷
 	3.É¾³ýµÄ½áµãÓÐÓÒ×ÓÊ÷
 	4.É¾³ýµÄ½áµãÓÐÁ½¸ö×ÓÊ÷ 
-	*/ 
+
 	
 	if(T->data == x)
 	{
@@ -209,4 +209,4 @@ AVL_Node *AVL_Delete(AVL_Tree &T,int x)	//Æ½ºâÊ÷µÄÉ¾³ý
 		AVL_Delete(T->rchild,x);	
 		
 	} 
-} 
+} */
