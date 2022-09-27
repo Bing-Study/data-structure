@@ -5,7 +5,7 @@
 
 typedef int Elemtype;
 
-
+bool visited[MaxNum];		//访问标记数组 
 typedef struct ArcNode{		//边表结点 
 	int adjvex;				//该弧所指向的顶点位置
 	struct ArcNode *next;	//指向下一条弧的指针
@@ -22,11 +22,33 @@ typedef struct{				//邻接表
 	int vexnum,arcnum;		//图的顶点数和弧数 
 }ALGraph;
 
+typedef struct LinkNode{
+	int data;
+	struct LinkNode *next;
+}LinkNode;
+typedef struct {
+	LinkNode *front,*rear;
+}LinkQueue;
+
+
+
+
+
 bool Init_Graph(ALGraph &G);	//初始化图 
 bool Insert(ALGraph &G,Elemtype x);	//插入顶点 
 int Search_Graph(ALGraph G,Elemtype x);		//查找图中是否存在x顶点
-bool creat_Graph(ALGraph &G);		//创建邻接表 
+bool Creat_Graph(ALGraph &G);		//创建邻接表 
 void print_Graph(ALGraph G);	//按照邻接表的物理结构打印当前图 
+bool Insert_Edge(ALGraph &G,Elemtype x,Elemtype y);	//插入与x,y相连的边
+void BFSTraverse(ALGraph G);		//对图G进行广度优先搜索遍历 
+void BFS(ALGraph G,Elemtype v,LinkQueue &Q);	//从v顶点出发，广度优先搜索遍历
+
+
+bool InitQueue(LinkQueue &Q);	//初始化队列
+bool IsEmpty(LinkQueue &Q);		//判空 
+bool EnQueue(LinkQueue &Q,Elemtype x);	//入队 
+int PopQueue(LinkQueue &Q);	//出队 
+
 
 int main(){
 	ALGraph G;
@@ -38,8 +60,11 @@ int main(){
 	printf("初始化成功!\n");
 	
 	
-	for(int j = 1;j <= 3;j++)
-		Insert(G,j+96);
+	Creat_Graph(G);
+	
+	BFSTraverse(G);
+	
+	
 	print_Graph(G);
 	return 0;
 } 
@@ -98,10 +123,6 @@ bool Insert(ALGraph &G,Elemtype x)	//插入顶点
 		S->next = A; 
 		
 		G.arcnum++;	
-		printf("  %d  \n",G.vertices[G.vexnum].first->next->adjvex);
-		if(G.vertices[G.vexnum].first->next->next != NULL){
-			printf("  %d  \n",G.vertices[G.vexnum].first->next->next->adjvex);
-		}
 		
 		printf("请输入下一个与%c点相连接的顶点:",x);
 		scanf("%c%*c",&temp);
@@ -135,7 +156,148 @@ void print_Graph(ALGraph G)	//按照邻接表的物理结构打印当前图
 	}
 }
 
-bool creat_Graph(ALGraph &G)		//创建邻接表 
+bool Creat_Graph(ALGraph &G)		//创建邻接表 
 {
+	int x,y;
+	//创建无向图 
+	Elemtype data[MaxNum]={'a','b','c','d','e'};	//顶点表
+	//关系表 
+	Elemtype Edge[MaxNum*2][2]={{'a','b'},{'a','c'},{'b','d'},{'d','c'},{'c','e'},};
+	
+	for(int i = 0;i <= MaxNum;i++){	//插入顶点 
+		if(data[i] == NULL)
+			break;
+		G.vertices[i+1].data = data[i];
+		G.vexnum++;
+		printf("%c ",G.vertices[i+1].data);
+	}
+	
+	
+	printf("\n");
+	
+	for(int i = 0;i <= MaxNum;i++){	//插入关系 
+		if(Edge[i][0] == NULL){
+			break;
+		}
+		
+		
+		
+		//插入关系 
+		Insert_Edge(G,Edge[i][0],Edge[i][1]);
+		Insert_Edge(G,Edge[i][1],Edge[i][0]);
+	}
+
 	
 }
+
+bool Insert_Edge(ALGraph &G,Elemtype x,Elemtype y)	//插入与x,y相连的边
+{
+	int i,j;
+	i=Search_Graph(G,x);	//获取边上两个顶点在表中的位置 
+	j=Search_Graph(G,y);
+	
+	ArcNode *S=G.vertices[i].first;
+	
+	ArcNode *A=(ArcNode *)malloc(sizeof(ArcNode));
+	
+	A->adjvex = j;
+	A->next = S->next;
+	S->next = A;
+	G.arcnum++;
+	
+} 
+
+
+void BFSTraverse(ALGraph G)		//对图G进行广度优先搜索遍历 
+{
+	LinkQueue Q;
+	for(int i = 1;i <= G.vexnum;i++){
+		visited[i] = false;
+	}
+	
+	InitQueue(Q);	//初始化队列 
+	for(int i = 1;i <= G.vexnum;i++){
+		if(!visited[i]){
+			BFS(G,G.vertices[i].data,Q);
+		}
+	} 
+} 
+
+void BFS(ALGraph G,Elemtype v,LinkQueue &Q)	//从v顶点出发，广度优先搜索遍历
+{
+	int j;
+	ArcNode *S;
+	int i = Search_Graph(G,v);
+	
+	printf("%c ",G.vertices[i].data);
+	visited[i] = true;
+	
+	
+	EnQueue(Q,i);	//将v传入队列 
+	
+	while(!IsEmpty(Q)){
+		j = PopQueue(Q);	//出队，并获取出队的值 
+		S= G.vertices[j].first->next;	//获取出队数据在图中的指针 
+		while(S != NULL){
+			if(!visited[S->adjvex]){
+				EnQueue(Q,S->adjvex);
+				printf("%c ",G.vertices[S->adjvex].data);
+				visited[S->adjvex] = true;
+			}//if
+			S = S->next; 
+			
+		} 
+	}
+	printf("\n");
+} 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+bool InitQueue(LinkQueue &Q){	//初始化队列 
+	Q.front=Q.rear=(LinkNode *)malloc(sizeof(LinkNode));
+	Q.front->next=NULL;
+} 
+bool IsEmpty(LinkQueue &Q){		//判空 
+	if(Q.front==Q.rear){
+		return true;
+	}
+	return false;
+} 
+
+bool EnQueue(LinkQueue &Q,Elemtype x)	//入队 
+{
+	LinkNode *L=(LinkNode *)malloc(sizeof(LinkNode));
+	L->data=x;
+	L->next=NULL;
+	Q.rear->next=L;
+	Q.rear=L;
+} 
+
+int PopQueue(LinkQueue &Q)		//出队
+{
+	int x;
+	if(IsEmpty(Q)){
+		return false;
+	}
+	LinkNode *p=Q.front->next;
+	x = p->data;
+	Q.front->next=p->next; 
+	if(p==Q.rear){
+		Q.front=Q.rear;
+	}
+	free(p);
+	return x;
+} 
+
