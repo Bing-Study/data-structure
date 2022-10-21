@@ -21,9 +21,11 @@ int main(){
 //	printf("оё╤ШеепРё╨");
 //	ShellSort(NList,Maxsize);		//оё╤ШеепР
 
-	printf("ц╟ещеепРё╨");			//ц╟ещеепР
-	BubbleSort(NList,Maxsize);		 
+//	printf("ц╟ещеепРё╨");			//ц╟ещеепР
+//	BubbleSort(NList,Maxsize);		 
 
+	printf("©ЛкыеепР:");				//©ЛкыеепР 
+	QuickSort(NList,0,Maxsize-1);
 
 	print(NList,Maxsize);
 	return 0; 

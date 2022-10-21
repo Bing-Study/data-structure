@@ -7,6 +7,8 @@ void InsertSort(Elemtype A[],int n);	//直接插入排序
 void print(Elemtype A[],int n);			//打印数组 
 void ShellSort(Elemtype A[],int n);		//希尔排序
 void BubbleSort(Elemtype A[],int n);	//冒泡排序
+void QuickSort(Elemtype A[],int low,int high);	//快速排序
+int Partition(Elemtype A[],int low,int high);	//快速排序的一趟划分 
  
 
 void InsertSort(Elemtype A[],int n)	//直接插入排序
@@ -72,5 +74,29 @@ void BubbleSort(Elemtype A[],int n)		//冒泡排序
 		if(flag == false)
 			return;
 	}
+}
 
+void QuickSort(Elemtype A[],int low,int high)	//快速排序
+{//参数:A位数组,low为数组第一个位置,high为数组最后一个位置 
+	if(low<high){
+		int pivotpos = Partition(A,low,high);	//划分
+		QuickSort(A,low,pivotpos-1);
+		QuickSort(A,pivotpos+1,high);
+	} 
+} 
+int Partition(Elemtype A[],int low,int high)	//快速排序的一趟划分 
+{
+	Elemtype pivot = A[low];
+	while(low<high){
+		while(pivot <= A[high] && low < high){//如果piovt的值达于A[high]位置上的值	
+			high-=1;							//则说明，high位置上的值应该在pivot之前，
+		}
+		A[low] = A[high];				//将A[high]的数据放到low的位置上
+		while(pivot >= A[low] && low < high){
+			low+=1;
+		}
+		A[high] = A[low];
+	}
+	A[low] = pivot;	//循环结束后，low位置的值就是pivot最后的位置 
+	return low;		//返回low的值，将表划分位两个子表 
 } 
