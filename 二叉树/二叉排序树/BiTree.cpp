@@ -17,6 +17,10 @@ void InOrder(BiTree B);	//中序遍历二叉树
 bool BST_Delet(BiTree &B,int x);	//删除数据 
 BiNode *Search_Next(BiTree B);	//寻找节点的后继  
 
+void Order(BiTree B);	//非递归遍历二叉树 
+void TestOrder(BiTree B);	//递归遍历二叉树（测试非递归是否正确） 
+
+
 
 int main(){
 	int x[10]={50,30,70,20,36,63,76,31,40,80};
@@ -25,16 +29,24 @@ int main(){
 	int i=0;
 	
 	BST_Creat(B,x,10);
+	
+	
+/*	
 	InOrder(B);
 	printf("\n");
 	S = BST_Search(B,20);
 	printf("S->data:%d\n",S->data);
 	printf("S's father->data:%d\n",father->data);
-//	printf("next->data:%d\n",Search_Next(S->rchild)->data);
+	printf("next->data:%d\n",Search_Next(S->rchild)->data);
 	
 	BST_Delet(B,30);
 	InOrder(B);
-	
+*/
+	printf("非递归："); 
+	Order(B);
+	printf("\n");
+	printf("递归：");
+	TestOrder(B);
 	return 0;
 }
 
@@ -112,7 +124,7 @@ bool BST_Delet(BiTree &B,int x)	//删除数据
 (1)该节点是一个叶子节点，
 	直接删除即可
 (2)该节点有一个左子树或者右子树
-	用子树或者右子树直接替代该节点并删除原子节点
+	用左子树或者右子树直接替代该节点并删除原子节点
 (3)该节点有两个子节点
 	用该节点的直接后继替代即可,(直接后继为该节点的右子树的最左边的节点)
 */ 
@@ -163,3 +175,94 @@ bool BST_Delet(BiTree &B,int x)	//删除数据
 	}
 	return false;
 } 
+
+void Order(BiTree B){	//非递归遍历二叉树
+	
+	//初始化 
+	BiNode *p=B;
+	BiNode *r = NULL; 
+	BiNode *S[50];	//栈 
+	int top = 0;	//栈顶指针
+	
+	
+/************************************************
+					先序遍历 
+************************************************/
+/*	
+	if(p == NULL)
+		exit(0);
+	
+	while(top > 0 || p != NULL){	//栈非空或节点非空时 
+		if(p != NULL){
+			printf("%d ",p->data);
+			S[++top] = p;	//若节点不为空，则入栈
+			p = p->lchild;
+		}
+		else{
+			p = S[top--];
+			p = p->rchild;
+		}
+	} 
+*/
+
+
+
+/************************************************
+					中序遍历 
+************************************************/
+
+/*	if(B == NULL)
+		exit(0);
+	while(p != NULL || top > 0){
+		if(p != NULL){
+			S[++top] = p;
+			p = p->lchild;
+		}
+		else{
+			p = S[top--];
+			printf("%d ",p->data);
+			p = p->rchild;
+		}
+	}
+*/
+
+/************************************************
+					后序遍历 
+************************************************/
+	if(p == NULL)
+		exit(0);
+	while(p != NULL || top > 0){
+		if(p != NULL){
+			S[++top] = p;
+			p = p->lchild;
+		}
+		else{
+			p = S[top];	//读取栈顶节点
+			//如果未对右子树进行过操作 
+			if(p->rchild != NULL && p->rchild != r){
+				//将p的右子树入栈
+				p = p->rchild; 
+				S[++top] = p;
+				//继续访问p的左子树 
+				p = p->lchild;
+			}
+			else {	//右子树不存在或已经访问过
+				p = S[top--];	//出栈 
+				printf("%d ",p->data);	//访问节点 
+				r = p;		//标记上次访问节点 
+				p = NULL;	//将p置空，进入下一次循环 
+			}
+		}
+		 
+	}
+
+}
+
+void TestOrder(BiTree B)	//递归遍历二叉树（测试非递归是否正确）
+{
+	if(B == NULL)
+		return;
+	else {
+
+	} 
+}

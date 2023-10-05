@@ -3,12 +3,18 @@
 typedef int Elemtype;
 
 
+/***************************************
+		数组下标从0开始
+***************************************/ 
+
 void InsertSort(Elemtype A[],int n);	//直接插入排序 
 void print(Elemtype A[],int n);			//打印数组 
 void ShellSort(Elemtype A[],int n);		//希尔排序
 void BubbleSort(Elemtype A[],int n);	//冒泡排序
 void QuickSort(Elemtype A[],int low,int high);	//快速排序
 int Partition(Elemtype A[],int low,int high);	//快速排序的一趟划分 
+
+void BinarySort(Elemtype A[],int n);	//二分插入排序 
  
 
 void InsertSort(Elemtype A[],int n)	//直接插入排序
@@ -100,3 +106,29 @@ int Partition(Elemtype A[],int low,int high)	//快速排序的一趟划分
 	A[low] = pivot;	//循环结束后，low位置的值就是pivot最后的位置 
 	return low;		//返回low的值，将表划分位两个子表 
 } 
+
+void BinarySort(Elemtype A[],int n)	//二分插入排序 
+{
+	int low,high,mid; 
+	int temp;		//临时变量，存储待排序关键字。
+	
+	for(int i = 1;i < n;i++){	//依次排序 
+		low = 0;
+		high = i-1;
+		temp = A[i]; //记录该关键字，防止关键字插入后移导致关键字消失。
+		
+		while(low <= high){
+			mid = (low + high) / 2;
+			if(A[mid] > temp){
+				high = mid - 1;
+			}
+			else
+				low = mid + 1;
+		}
+		
+		for(int j = i - 1;j >= low;j--){
+			A[j+1] = A[j];
+		}
+		A[low] = temp;
+	} 
+}

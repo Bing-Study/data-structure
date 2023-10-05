@@ -6,6 +6,7 @@
 typedef int Elemtype;
 
 bool visited[MaxNum];		//访问标记数组 
+
 typedef struct ArcNode{		//边表结点 
 	int adjvex;				//该弧所指向的顶点位置
 	struct ArcNode *next;	//指向下一条弧的指针
@@ -42,7 +43,7 @@ void print_Graph(ALGraph G);	//按照邻接表的物理结构打印当前图
 bool Insert_Edge(ALGraph &G,Elemtype x,Elemtype y);	//插入与x,y相连的边
 void BFSTraverse(ALGraph G);		//对图G进行广度优先搜索遍历 
 void BFS(ALGraph G,Elemtype v,LinkQueue &Q);	//从v顶点出发，广度优先搜索遍历
-
+void DFS_Judge_Circle(ALGraph G);		//深度优先搜索判断是否存在回路 
 
 bool InitQueue(LinkQueue &Q);	//初始化队列
 bool IsEmpty(LinkQueue &Q);		//判空 
@@ -179,12 +180,11 @@ bool Creat_Graph(ALGraph &G)		//创建邻接表
 		if(Edge[i][0] == NULL){
 			break;
 		}
+	
 		
-		
-		
-		//插入关系 
-		Insert_Edge(G,Edge[i][0],Edge[i][1]);
-		Insert_Edge(G,Edge[i][1],Edge[i][0]);
+	//插入关系 
+	Insert_Edge(G,Edge[i][0],Edge[i][1]);
+	Insert_Edge(G,Edge[i][1],Edge[i][0]);
 	}
 
 	
@@ -301,3 +301,27 @@ int PopQueue(LinkQueue &Q)		//出队
 	return x;
 } 
 
+void DFS_Judge_Circle(ALGraph G)		//深度优先搜索判断是否存在回路 
+{
+	visited[MaxNum] = false; 
+	int S[MaxNum];	//栈，用于存储顶点信息，进行遍历
+	int top = 0;//栈顶指针 
+	VNode p = G.vertices[0];//从第一个顶点开始遍历 
+	if(p == NULL){
+		return 0;
+	}
+	
+	
+	while(p != NULL || top > 0){
+		if(p != NULL){
+			S[++top] = p->data;	//将节点信息存入栈中 
+			p=p.first->next; 
+		}
+		else{
+			p = S[top--];
+			if(visited[p->data] == true)
+				return false;
+			
+		}
+	}
+}

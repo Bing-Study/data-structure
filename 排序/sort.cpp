@@ -24,8 +24,11 @@ int main(){
 //	printf("冒泡排序：");			//冒泡排序
 //	BubbleSort(NList,Maxsize);		 
 
-	printf("快速排序:");				//快速排序 
-	QuickSort(NList,0,Maxsize-1);
+//	printf("快速排序:");				//快速排序 
+//	QuickSort(NList,0,Maxsize-1);
+
+	printf("二分插入排序：");
+	BinarySort(NList,Maxsize); 
 
 	print(NList,Maxsize);
 	return 0; 
