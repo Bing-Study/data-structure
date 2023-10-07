@@ -15,6 +15,8 @@ void QuickSort(Elemtype A[],int low,int high);	//快速排序
 int Partition(Elemtype A[],int low,int high);	//快速排序的一趟划分 
 
 void BinarySort(Elemtype A[],int n);	//二分插入排序 
+
+void ColorSort(int A[],int n);	//荷兰国旗问题 
  
 
 void InsertSort(Elemtype A[],int n)	//直接插入排序
@@ -131,4 +133,28 @@ void BinarySort(Elemtype A[],int n)	//二分插入排序
 		}
 		A[low] = temp;
 	} 
+}
+void ColorSort(int A[],int n)	//荷兰国旗问题
+{
+	const int Red = 1,White = 2,Blue = 3;
+	//1为红色,2为白色，3为蓝色
+	
+	int Insert_Red = 0, Insert_White = 0, i;
+	for(i = 0 ; i < n ; i++){
+		if(A[i] == White){
+			//当前条块为白色，与白色条块插入位置的条块作交换 
+			A[i] = A[Insert_White];
+			A[Insert_White] = White;
+			Insert_White++;
+		}
+		if(A[i] == Red){
+			//当前条块为红色，与红色条块插入位置的条块作交换
+			//再与白色条块插入位置的条块作交换	
+			A[i] = A[Insert_White];
+			A[Insert_White] = A[Insert_Red];
+			A[Insert_Red] = Red;
+			Insert_Red++;
+			Insert_White++;
+		}
+	}
 }
