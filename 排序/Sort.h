@@ -1,5 +1,7 @@
 #include<stdio.h>
 
+#define Maxsize 10
+
 typedef int Elemtype;
 
 
@@ -12,11 +14,13 @@ void print(Elemtype A[],int n);			//打印数组
 void ShellSort(Elemtype A[],int n);		//希尔排序
 void BubbleSort(Elemtype A[],int n);	//冒泡排序
 void QuickSort(Elemtype A[],int low,int high);	//快速排序
-int Partition(Elemtype A[],int low,int high);	//快速排序的一趟划分 
+int Partition(Elemtype A[],int low,int high);	//快速排序的一趟划分
 
+void Swap(int *a,int *b);	//交换 
 void BinarySort(Elemtype A[],int n);	//二分插入排序 
-
 void ColorSort(int A[],int n);	//荷兰国旗问题 
+void Heapify(int A[],int start,int end);	//调整堆函数 
+void HeapSort(int A[],int len);		//堆排序 
  
 
 void InsertSort(Elemtype A[],int n)	//直接插入排序
@@ -157,4 +161,86 @@ void ColorSort(int A[],int n)	//荷兰国旗问题
 			Insert_White++;
 		}
 	}
+}
+
+void Swap(int *a,int *b)	//交换
+{
+	int temp = *a;
+	*a = *b;
+	*b = temp; 
+}
+
+void Heapify(int A[],int start,int end)		//调整堆函数 
+{
+	int dad = start;
+	int son = dad * 2 + 1;
+	
+	
+	/*********************************************
+				创建大根堆 
+				从上至下依次调整堆的结构 
+	**********************************************/
+//	while(son <= end){
+//		//先比较两个子节点的大小，选出大的一个 
+//		if(son + 1 <= end && A[son] < A[son + 1])
+//			son++;
+//		//若父节点大于子节点，则符合大根堆，跳出循环 
+//		if(A[dad] > A[son])
+//			return; 
+//		else{
+//		//否则，交换节点数据 
+//			Swap(&A[dad],&A[son]);
+//			dad = son;
+//			son = dad * 2 + 1; 
+//		} 
+//	}
+	
+	/*********************************************
+					创建小根堆 
+			从上至下依次调整堆的结构
+			代码结构与大根堆基本一样 
+	**********************************************/
+	while(son <= end){
+		//先比较两个子节点的大小，选出大的一个 
+		if(son + 1 <= end && A[son] > A[son + 1])
+			son++;
+		//若父节点大于子节点，则符合大根堆，跳出循环 
+		if(A[dad] < A[son])
+			return; 
+		else{
+		//否则，交换节点数据 
+			Swap(&A[dad],&A[son]);
+			dad = son;
+			son = dad * 2 + 1; 
+		} 
+	}
+
+	
+}
+
+void HeapSort(int A[],int len)		//堆排序
+{
+	int i;
+	
+	/*
+		创建大根堆，并经行大根堆的堆排序 
+	*/
+	for(i = (len / 2) - 1; i >= 0; i--){
+		//从最后一个带有子节点的节点从下往上开始调整堆的结构 
+		Heapify(A,i,len-1);	
+	} 
+	
+	//调整完一遍后,最大值在堆的顶部,即位于A[0]处
+	//将第一个位置，即已排好的位置与最后一位互换
+	//并重新进行排序 
+	for(i = len - 1; i > 0; i--){
+		Swap(&A[0],&A[i]);
+		//由于大根堆已建立完毕
+		//在交换完数据后，只可能有一位数据不符合大根堆要求，
+		//即交换后的堆顶元素，在调整一次堆即可
+		//调整位置从0开始(堆顶)。 
+		Heapify(A,0,i-1);
+		
+
+	} 
 }

@@ -1,8 +1,9 @@
 
 #include "Sort.h"
 
-#define Maxsize 10
 
+
+//排序数组 
 Elemtype NList[Maxsize] = {50,10,30,26,18,40,43,32,90,68};
 
 int main(){
@@ -12,9 +13,10 @@ int main(){
 	
 	
 	printf("原数组："); 
-	print(Color,9);
+	print(NList,Maxsize);
 	
 	printf("\n");
+
 	
 //	printf("直接插入排序：");
 //	InsertSort(NList,Maxsize);		//直接插入排序 
@@ -32,8 +34,11 @@ int main(){
 //	printf("二分插入排序：");
 //	BinarySort(NList,Maxsize); 
 
-	ColorSort(Color,9);
+//	ColorSort(Color,9);
 
-	print(Color,9);
+	HeapSort(NList,Maxsize); 
+
+	printf("排序后："); 
+	print(NList,Maxsize);	//遍历 
 	return 0; 
 } 
