@@ -3,6 +3,7 @@
 
 #define MaxNum 100
 
+
 typedef int Elemtype;
 
 bool visited[MaxNum];		//访问标记数组 
@@ -33,8 +34,6 @@ typedef struct {
 
 
 
-
-
 bool Init_Graph(ALGraph &G);	//初始化图 
 bool Insert(ALGraph &G,Elemtype x);	//插入顶点 
 int Search_Graph(ALGraph G,Elemtype x);		//查找图中是否存在x顶点
@@ -43,7 +42,7 @@ void print_Graph(ALGraph G);	//按照邻接表的物理结构打印当前图
 bool Insert_Edge(ALGraph &G,Elemtype x,Elemtype y);	//插入与x,y相连的边
 void BFSTraverse(ALGraph G);		//对图G进行广度优先搜索遍历 
 void BFS(ALGraph G,Elemtype v,LinkQueue &Q);	//从v顶点出发，广度优先搜索遍历
-void DFS_Judge_Circle(ALGraph G);		//深度优先搜索判断是否存在回路 
+
 
 bool InitQueue(LinkQueue &Q);	//初始化队列
 bool IsEmpty(LinkQueue &Q);		//判空 
@@ -251,20 +250,6 @@ void BFS(ALGraph G,Elemtype v,LinkQueue &Q)	//从v顶点出发，广度优先搜索遍历
 	printf("\n");
 } 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 bool InitQueue(LinkQueue &Q){	//初始化队列 
 	Q.front=Q.rear=(LinkNode *)malloc(sizeof(LinkNode));
 	Q.front->next=NULL;
@@ -301,27 +286,6 @@ int PopQueue(LinkQueue &Q)		//出队
 	return x;
 } 
 
-void DFS_Judge_Circle(ALGraph G)		//深度优先搜索判断是否存在回路 
-{
-	visited[MaxNum] = false; 
-	int S[MaxNum];	//栈，用于存储顶点信息，进行遍历
-	int top = 0;//栈顶指针 
-	VNode p = G.vertices[0];//从第一个顶点开始遍历 
-	if(p == NULL){
-		return 0;
-	}
-	
-	
-	while(p != NULL || top > 0){
-		if(p != NULL){
-			S[++top] = p->data;	//将节点信息存入栈中 
-			p=p.first->next; 
-		}
-		else{
-			p = S[top--];
-			if(visited[p->data] == true)
-				return false;
-			
-		}
-	}
-}
+
+
+
