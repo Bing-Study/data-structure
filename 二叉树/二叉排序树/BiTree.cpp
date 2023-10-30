@@ -16,9 +16,10 @@ BiNode *BST_Search(BiTree B,int x);	//排序树的查找
 void InOrder(BiTree B);	//中序遍历二叉树 
 bool BST_Delet(BiTree &B,int x);	//删除数据 
 BiNode *Search_Next(BiTree B);	//寻找节点的后继  
+int GetDepth(BiTree B);		//非递归求树高 
+int Get_Depth(BiTree B);	//递归求树高 
 
-void Order(BiTree B);	//非递归遍历二叉树 
-void TestOrder(BiTree B);	//递归遍历二叉树（测试非递归是否正确） 
+void Order(BiTree B);	//非递归遍历二叉树  
 
 
 
@@ -27,6 +28,7 @@ int main(){
 	BiTree B;
 	BiNode *S;
 	int i=0;
+	int depth;
 	
 	BST_Creat(B,x,10);
 	
@@ -42,11 +44,13 @@ int main(){
 	BST_Delet(B,30);
 	InOrder(B);
 */
-	printf("非递归："); 
-	Order(B);
-	printf("\n");
-	printf("递归：");
-	TestOrder(B);
+//	printf("非递归："); 
+//	Order(B);
+//	printf("\n");
+	
+	printf("非递归二叉树高为：%d",GetDepth(B));
+	printf("递归二叉树高为：%d",Get_Depth(B));
+	
 	return 0;
 }
 
@@ -258,11 +262,42 @@ void Order(BiTree B){	//非递归遍历二叉树
 
 }
 
-void TestOrder(BiTree B)	//递归遍历二叉树（测试非递归是否正确）
+int GetDepth(BiTree B)	//非递归求树高
 {
-	if(B == NULL)
-		return;
-	else {
+	BiNode *p = B;
+	BiNode *Q[100];
+	int front = -1,rear = -1;
+	int last = 0,depth = 0;
+	
+	if(!p)
+		return depth;
+	Q[++rear] = p;
+	
+	while(front < rear)	//p非空或队列不为空
+	{
+		p = Q[++front];	//出队
+		
+		if(p->lchild)
+			Q[++rear] = p->lchild;
+		if(p->rchild)
+			Q[++rear] = p->rchild;
+		
+		if(front == last){
+			depth++;
+			last = rear;
+		} 
 
-	} 
+	 }
+	return depth; 
+}
+int Get_Depth(BiTree B)	//递归求树高
+{
+	int ldepth;
+	int rdepth;
+	
+	if(!B)
+		return 0;
+	ldepth = Get_Depth(B->lchild);
+	rdepth = Get_Depth(B->rchild);
+	return ldepth>rdepth?ldepth + 1:rdepth + 1;
 }
