@@ -1,6 +1,8 @@
 #include<stdio.h>
 #include<stdlib.h>
 
+#define MAXSIZE 11
+
 
 typedef struct BiNode{	
 	int data;
@@ -19,6 +21,10 @@ BiNode *Search_Next(BiTree B);	//寻找节点的后继
 int GetDepth(BiTree B);		//非递归求树高 
 int Get_Depth(BiTree B);	//递归求树高 
 int GetWidth(BiTree B);		//求树宽 
+int Get_Total(BiTree B);	//计算树的节点数 
+
+void Find_Ancestor(BiTree B,int x,BiNode *S[]);	//寻找 data=x节点的祖先 
+
 
 
 void Order(BiTree B);	//非递归遍历二叉树  
@@ -26,11 +32,11 @@ void Order(BiTree B);	//非递归遍历二叉树
 		二叉树结构 
 			   50
 		    /     \
-		   30     70
-		  / \    /  \
- 		 20 36  63  76
- 		   / \       \
- 		  31 40      80
+		   30      70
+		  / \     /  \
+ 		 20 36   63  76
+ 		   / \   /    \
+ 		  31 40 72     80
 *********************/
 
 
@@ -39,13 +45,14 @@ void Order(BiTree B);	//非递归遍历二叉树
 
 
 int main(){
-	int x[10]={50,30,70,20,36,63,76,31,40,80};
+	int x[MAXSIZE]={50,30,70,20,36,63,76,31,40,72,80};
+	BiNode *Stack[100];	//非递归遍历栈 
 	BiTree B;
 	BiNode *S;
-	int i=0;
+	int i=1;
 	int depth;
 	
-	BST_Creat(B,x,10);
+	BST_Creat(B,x,MAXSIZE);
 	
 	
 /*	
@@ -63,8 +70,13 @@ int main(){
 //	Order(B);
 //	printf("\n");
 	
-	printf("非递归二叉树高为：%d",GetDepth(B));
-	printf("二叉树宽为：%d",GetWidth(B));
+	printf("非递归二叉树高为：%d\n",GetDepth(B));
+	printf("二叉树宽为：%d\n",GetWidth(B));
+	printf("二叉树的总结点数为%d\n",Get_Total(B));
+	Order(B);
+	printf("\n");
+	
+	Find_Ancestor(B,80,Stack);
 	
 	return 0;
 }
@@ -348,4 +360,65 @@ int GetWidth(BiTree B)		//求树宽
 
 	 }
 	return max; 
+}
+
+int Get_Total(BiTree B)	//计算树的节点数
+{
+	BiNode *p = B;
+	if(!p)
+		return 0;
+	
+	int lnum,rnum,total;
+	lnum = Get_Total(p->lchild);
+	rnum = Get_Total(p->rchild);
+	total = lnum + rnum + 1;
+	
+	return total;
+}
+
+void Find_Ancestor(BiTree B,int x,BiNode *S[])	//寻找 data=x节点的祖先 
+{
+	int top = 0;
+	BiNode *r = NULL;
+	int test = 0;
+	BiNode *p = B;
+	while(p != NULL || top > 0){
+		test++;
+		if(p != NULL){
+			if(p->data == x){
+				printf("top = %d\n",top); 
+				break;	//找到该节点，退出循环 
+			}
+			S[++top] = p;
+			p = p->lchild;
+			
+		}
+		
+		else {	//该节点为空
+			p = S[top];		//读取栈顶元素
+			if(p->rchild != NULL && p->rchild != r)	{//右子树存在且没有被访问过 
+				p=p->rchild;
+				if(p->data == x){		//检查该节点是否为x节点 
+					printf("top = %d\n",top); 
+					break;
+				}
+				S[++top] = p;
+				p = p->lchild;
+			}
+			
+			else{	//右子树不存在或被访问过
+				p = S[top--];
+				r = p;
+				p = NULL;	
+				 //标记上次访问过的节点，进入下次循环 
+			}
+			
+		}
+	}
+	printf("test = %d\n",test);
+	for(int i = 1;i<=top;i++){
+		p = S[i];
+		printf("%d  ",p->data);	//自栈低向栈顶打印栈 
+	}
+	printf("\n"); 
 }
