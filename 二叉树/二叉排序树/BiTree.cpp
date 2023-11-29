@@ -22,12 +22,12 @@ int GetDepth(BiTree B);		//非递归求树高
 int Get_Depth(BiTree B);	//递归求树高 
 int GetWidth(BiTree B);		//求树宽 
 int Get_Total(BiTree B);	//计算树的节点数 
-
 void Find_Ancestor(BiTree B,int x,BiNode *S[]);	//寻找 data=x节点的祖先 
-
-
-
+BiNode *Find_Parent(BiTree B,int x);	//寻找x节点的祖先 
+bool Judge_Same(BiTree A,BiTree B);		//判断两颗二叉树是否相同 
 void Order(BiTree B);	//非递归遍历二叉树  
+
+
 /**********************
 		二叉树结构 
 			   50
@@ -46,13 +46,19 @@ void Order(BiTree B);	//非递归遍历二叉树
 
 int main(){
 	int x[MAXSIZE]={50,30,70,20,36,63,76,31,40,72,80};
+	int x2[MAXSIZE]={50,30,70,20,36,63,76,31,40,72,80};
 	BiNode *Stack[100];	//非递归遍历栈 
 	BiTree B;
+	BiTree A;
 	BiNode *S;
+	BiNode *s;
 	int i=1;
 	int depth;
 	
+	int data = 50;
+	
 	BST_Creat(B,x,MAXSIZE);
+	BST_Creat(A,x2,MAXSIZE);
 	
 	
 /*	
@@ -66,19 +72,41 @@ int main(){
 	BST_Delet(B,30);
 	InOrder(B);
 */
-//	printf("非递归："); 
-//	Order(B);
-//	printf("\n");
-	
-	printf("非递归二叉树高为：%d\n",GetDepth(B));
-	printf("二叉树宽为：%d\n",GetWidth(B));
-	printf("二叉树的总结点数为%d\n",Get_Total(B));
+	printf("非递归："); 
 	Order(B);
 	printf("\n");
 	
-	Find_Ancestor(B,80,Stack);
+//	printf("非递归二叉树高为：%d\n",GetDepth(B));
+//	printf("二叉树宽为：%d\n",GetWidth(B));
+//	printf("二叉树的总结点数为%d\n",Get_Total(B));
+//	Order(B);
+//	printf("\n");
+//	
+
+/********************************
+	寻找所有祖先节点（寻找路径） 
+********************************/
+//	Find_Ancestor(B,80,Stack);
+
+/*****************************
+		寻找父亲节点 
+********************************/
+//	if(Find_Parent(B,data))
+//		printf("data = %d 的父节点为：%d",data,Find_Parent(B,data)->data);
+//	else	
+//		printf("该节点不存在(或该节点为根节点)");
+//	return 0;
+
+/*****************************
+		判断两个二叉树是否相同。 
+********************************/
+
+	if(Judge_Same(B,A))
+		printf("SAME\n");
 	
-	return 0;
+	else
+		printf("NOT SAME\n"); 
+
 }
 
 bool InitTree(BiTree &B)		//初始化二叉树
@@ -219,7 +247,7 @@ void Order(BiTree B){	//非递归遍历二叉树
 /************************************************
 					先序遍历 
 ************************************************/
-/*	
+	
 	if(p == NULL)
 		exit(0);
 	
@@ -234,7 +262,7 @@ void Order(BiTree B){	//非递归遍历二叉树
 			p = p->rchild;
 		}
 	} 
-*/
+
 
 
 
@@ -260,6 +288,7 @@ void Order(BiTree B){	//非递归遍历二叉树
 /************************************************
 					后序遍历 
 ************************************************/
+/*
 	if(p == NULL)
 		exit(0);
 	while(p != NULL || top > 0){
@@ -286,7 +315,7 @@ void Order(BiTree B){	//非递归遍历二叉树
 		}
 		 
 	}
-
+*/
 }
 
 int GetDepth(BiTree B)	//非递归求树高
@@ -421,4 +450,69 @@ void Find_Ancestor(BiTree B,int x,BiNode *S[])	//寻找 data=x节点的祖先
 		printf("%d  ",p->data);	//自栈低向栈顶打印栈 
 	}
 	printf("\n"); 
+}
+
+BiNode *Find_Parent(BiTree B,int x) //寻找data = x节点的父节点
+{
+	BiTree S[MAXSIZE];
+	int top = 0;
+	BiNode *p = B;
+	BiNode *r = NULL;
+	int i = 0;
+	if(!p){	//空树或x节点为根节点 
+		return NULL;
+	}
+	
+	while(top > 0 || p){
+		if(p){
+			S[++top] = p;
+			if(p->lchild && p->lchild->data == x)
+				return p;
+			if(p->rchild && p->rchild->data == x)
+				return p;
+			p = p->lchild;
+		}
+		else{
+			p = S[top];	//读取栈顶元素
+			if(p->rchild && p->rchild != r){
+				p = p->rchild;
+				if(p->lchild && p->lchild->data == x)
+					return p;
+				if(p->rchild && p->rchild->data == x)
+					return p;
+				S[++top] = p;
+				p = p->rchild;
+			} 
+			else{
+				p = S[top--];
+				//visite(p);
+				r = p;
+				p = NULL;
+			}
+		}
+	}
+	
+	return NULL;
+
+}
+
+
+bool Judge_Same(BiTree A,BiTree B)		//判断两颗二叉树是否相同
+{
+	
+	if(!A && !B)	//A,B 均为空 
+		return true;
+		
+	if(A == NULL || B == NULL)	//A或B为空 
+		return false;
+		
+	if(A->data != B->data)	//A，B节点值不相同 
+		return false;
+		
+	bool pl,pr;
+	
+	pl = Judge_Same(A->lchild,B->lchild);
+	pr = Judge_Same(A->rchild,B->rchild);
+	return pl&&pr; 		
+
 }
