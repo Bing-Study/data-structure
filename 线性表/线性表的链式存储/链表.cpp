@@ -72,15 +72,11 @@ int main(){
 
 //	删除链表中的最小值(假设最小值唯一)
 //	时间复杂度为O(n),空间复杂度为O(1)
-//	Delet_M_Elem(L);
-
+	Delet_M_Elem(L);
+	printList(L); 
 
 //将链表逆置,要求:不使用辅助空间 
 	reverseLink(L);
-	printf("\n");
-	
-	
-	
 	
 	printList(L); 
 	return 0;
@@ -134,6 +130,7 @@ LinkList List_TailInsert(LinkList &L){
 
 void printList(LinkList L){
 	LNode *S=L->next;
+	printf("\n");
 	while(S){
 		printf("%d   ",S->data);
 		S=S->next;
@@ -246,29 +243,38 @@ LNode *print_T_List(LinkList L){	//将链表逆序输出  采用递归思想
 } 
 
 bool Delet_M_Elem(LinkList &L){		//删除最小节点(假设节点唯一) 
-	LNode *r,*p=L->next;
+	LNode *p,*prior,*r,*t;
+	p = L->next;
+	prior = L;
+	r = p;		//r指针记录最小值节点 
+	t = prior; 	//p记录最小值节点前驱 
 	Elemtype temp=p->data;
 	while(p){
 		if(temp>p->data){
 			r=p;
+			t = prior; 
 			temp=p->data;
 		}
+		prior = prior->next;
 		p=p->next;
-	} 
-	p=r->next;
-	r->data=p->data;
-	r->next=p->next;
-	free(p);
+	}	//最小值节点为r,其前驱为t; 
+
+	t->next = r->next;
+
+	free(r);
 	return true;
 } 
 bool reverseLink(LinkList &L)	//将链表反向，要求：不能使用辅助进空间 
 {
-	LNode *p=L->next;
+	LNode *p=L->next,*r;
 	L->next=NULL;
-	while(p){
-		p->next=L->next;
-		L->next=p;
-		p=p->next;
+	int  i =0;
+	while(p != NULL){
+		r = p->next; 
+		p->next = L->next;
+		L->next = p;
+		p = r;
+		
 	}
 	return true;
 } 
