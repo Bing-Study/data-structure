@@ -22,7 +22,7 @@ int GetDepth(BiTree B);		//非递归求树高
 int Get_Depth(BiTree B);	//递归求树高 
 int GetWidth(BiTree B);		//求树宽 
 int Get_Total(BiTree B);	//计算树的节点数 
-void Find_Ancestor(BiTree B,int x,BiNode *S[]);	//寻找 data=x节点的祖先 
+void Find_Ancestor(BiTree B,int x,BiNode *S[]);	//寻找 data=x节点的祖先 (普通二叉树查找x的路径)
 BiNode *Find_Parent(BiTree B,int x);	//寻找x节点的祖先 
 bool Judge_Same(BiTree A,BiTree B);		//判断两颗二叉树是否相同 
 void Order(BiTree B);	//非递归遍历二叉树  
@@ -55,7 +55,7 @@ int main(){
 	int i=1;
 	int depth;
 	
-	int data = 50;
+	int data = 100;
 	
 	BST_Creat(B,x,MAXSIZE);
 	BST_Creat(A,x2,MAXSIZE);
@@ -91,21 +91,21 @@ int main(){
 /*****************************
 		寻找父亲节点 
 ********************************/
-//	if(Find_Parent(B,data))
-//		printf("data = %d 的父节点为：%d",data,Find_Parent(B,data)->data);
-//	else	
-//		printf("该节点不存在(或该节点为根节点)");
-//	return 0;
+	if(Find_Parent(B,data))
+		printf("data = %d 的父节点为：%d",data,Find_Parent(B,data)->data);
+	else	
+		printf("该节点不存在(或该节点为根节点)");
+	return 0;
 
 /*****************************
 		判断两个二叉树是否相同。 
 ********************************/
 
-	if(Judge_Same(B,A))
-		printf("SAME\n");
-	
-	else
-		printf("NOT SAME\n"); 
+//	if(Judge_Same(B,A))
+//		printf("SAME\n");
+//	
+//	else
+//		printf("NOT SAME\n"); 
 
 }
 
@@ -407,7 +407,7 @@ int Get_Total(BiTree B)	//计算树的节点数
 
 void Find_Ancestor(BiTree B,int x,BiNode *S[])	//寻找 data=x节点的祖先 
 {
-	int top = 0;
+/*	int top = 0;
 	BiNode *r = NULL;
 	int test = 0;
 	BiNode *p = B;
@@ -444,17 +444,24 @@ void Find_Ancestor(BiTree B,int x,BiNode *S[])	//寻找 data=x节点的祖先
 			
 		}
 	}
-	printf("test = %d\n",test);
-	for(int i = 1;i<=top;i++){
-		p = S[i];
-		printf("%d  ",p->data);	//自栈低向栈顶打印栈 
-	}
-	printf("\n"); 
+	
+*/	
+	
+	
+//	printf("test = %d\n",test);
+//	for(int i = 1;i<=top;i++){
+//		p = S[i];
+//		printf("%d  ",p->data);	//自栈低向栈顶打印栈 
+//	}
+//	printf("\n"); 
+
+
+
 }
 
 BiNode *Find_Parent(BiTree B,int x) //寻找data = x节点的父节点
 {
-	BiTree S[MAXSIZE];
+/*	BiTree S[MAXSIZE];
 	int top = 0;
 	BiNode *p = B;
 	BiNode *r = NULL;
@@ -493,6 +500,28 @@ BiNode *Find_Parent(BiTree B,int x) //寻找data = x节点的父节点
 	}
 	
 	return NULL;
+	
+	*/
+	
+	if(!B)
+		return NULL;
+		
+	BiNode *left,*right;
+	
+	if(B->lchild && B->lchild->data == x)
+		return B;
+	
+	else if(B->rchild && B->rchild->data == x)
+		return B; 
+	
+	left = Find_Parent(B->lchild,x);
+    right = Find_Parent(B->rchild,x);
+	
+	if(left)
+		return left;
+	else if(right)
+		return right;
+	
 
 }
 
